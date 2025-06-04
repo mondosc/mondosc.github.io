@@ -1,529 +1,313 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Boogie – MondoSC</title>
   <meta name="description" content="Where systems learn to dance. Interactive rhythm and watercolor dreams." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Boogie – Interactive Drum Machine */
-    /* Hidden Message: "When systems learn to dance, beauty emerges from rhythm." */
-
-:root {
-  --accent-orange: #ff7f50;
-  --accent-turquoise: #40e0d0;
-  --accent-purple: #9d4edd;
-  --accent-yellow: #ffd60a;
-  --text-dark: #222;
-  --text-muted: #666;
-  --bg-boogie: linear-gradient(135deg, #fff5ff 0%, #f0f8ff 100%);
-  --font-main: 'Inter', sans-serif;
-  --shadow-light: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-medium: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-main);
-  background: var(--bg-boogie);
-  color: var(--text-dark);
-  line-height: 1.6;
-  padding: 20px;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-  user-select: none;
-}
-
-/* Animated watercolor background */
-.watercolor-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  overflow: hidden;
-}
-
-.watercolor-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.1;
-  transition: all 0.3s ease;
-}
-
-.blob-1 {
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, var(--accent-orange), transparent);
-  top: 20%;
-  left: 10%;
-  animation: float1 20s ease-in-out infinite;
-}
-
-.blob-2 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, var(--accent-turquoise), transparent);
-  top: 60%;
-  right: 15%;
-  animation: float2 25s ease-in-out infinite;
-}
-
-.blob-3 {
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, var(--accent-purple), transparent);
-  bottom: 30%;
-  left: 50%;
-  animation: float3 30s ease-in-out infinite;
-}
-
-.blob-4 {
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(circle, var(--accent-yellow), transparent);
-  top: 10%;
-  right: 30%;
-  animation: float4 22s ease-in-out infinite;
-}
-
-@keyframes float1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(50px, -30px) scale(1.1); }
-  66% { transform: translate(-30px, 40px) scale(0.9); }
-}
-
-@keyframes float2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-40px, -50px) scale(1.2); }
-}
-
-@keyframes float3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, 20px) scale(1.1); }
-  75% { transform: translate(-20px, -30px) scale(0.8); }
-}
-
-@keyframes float4 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  40% { transform: translate(20px, 30px) scale(1.3); }
-  80% { transform: translate(-50px, -20px) scale(0.9); }
-}
-
-/* Performance optimizations */
-.watercolor-blob {
-  will-change: transform, opacity;
-}
-
-/* Beat reactive animation */
-.beat-active .blob-1 {
-  opacity: 0.4;
-  transform: scale(1.5) !important;
-  filter: blur(30px);
-}
-
-.beat-active .blob-2 {
-  opacity: 0.3;
-  transform: scale(1.3) !important;
-  filter: blur(35px);
-}
-
-.beat-active .blob-3 {
-  opacity: 0.5;
-  transform: scale(1.8) !important;
-  filter: blur(25px);
-}
-
-.beat-active .blob-4 {
-  opacity: 0.35;
-  transform: scale(1.4) !important;
-  filter: blur(32px);
-}
-
-/* Progress bar */
-.progress-container {
-  margin-bottom: 25px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 10px;
-  padding: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.progress-label {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 8px;
-  background: #ddd;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent-turquoise), var(--accent-purple));
-  border-radius: 4px;
-  width: 0%;
-  transition: width 0.1s ease;
-  position: relative;
-}
-
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 3px;
-  height: 100%;
-  background: white;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-}
-
-.nav-home {
-  position: fixed;
-  top: 30px;
-  left: 30px;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--accent-purple);
-  border-radius: 25px;
-  font-weight: 500;
-  text-decoration: none;
-  box-shadow: var(--shadow-light);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  z-index: 100;
-  border: 2px solid rgba(157, 78, 221, 0.3);
-}
-
-.nav-home:hover {
-  background: var(--accent-purple);
-  color: white;
-  transform: translateY(-2px);
-}
-
-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.site-title {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 300;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(45deg, var(--accent-purple), var(--accent-orange), var(--accent-turquoise));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 3s ease-in-out infinite;
-  cursor: pointer;
-}
-
-@keyframes shimmer {
-  0%, 100% { filter: hue-rotate(0deg); }
-  50% { filter: hue-rotate(40deg); }
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-  font-weight: 400;
-  font-style: italic;
-}
-
-/* Drum Machine Container */
-.drum-machine {
-  max-width: 900px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 25px;
-  padding: 40px;
-  box-shadow: var(--shadow-medium);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-/* Controls */
-.controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-}
-
-.play-btn, .stop-btn, .clear-btn {
-  padding: 15px 30px;
-  border: none;
-  border-radius: 20px;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--shadow-light);
-  font-family: var(--font-main);
-}
-
-.play-btn {
-  background: linear-gradient(135deg, var(--accent-turquoise), var(--accent-purple));
-  color: white;
-}
-
-.stop-btn {
-  background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
-  color: white;
-}
-
-.clear-btn {
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--text-dark);
-  border: 2px solid var(--text-muted);
-}
-
-.play-btn:hover, .stop-btn:hover, .clear-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-medium);
-}
-
-.play-btn.playing {
-  background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
-  animation: pulse 1s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.tempo-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.tempo-control label {
-  font-weight: 500;
-  color: var(--text-dark);
-}
-
-.tempo-slider {
-  width: 120px;
-  height: 6px;
-  border-radius: 3px;
-  background: #ddd;
-  outline: none;
-  -webkit-appearance: none;
-}
-
-.tempo-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--accent-turquoise);
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-/* Step Sequencer */
-.sequencer {
-  margin-bottom: 30px;
-}
-
-.track {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  gap: 10px;
-}
-
-.track-label {
-  width: 80px;
-  font-weight: 500;
-  color: var(--text-dark);
-  font-size: 0.9rem;
-}
-
-.steps {
-  display: flex;
-  gap: 5px;
-  flex: 1;
-}
-
-.step {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.7);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.step:hover {
-  border-color: var(--accent-turquoise);
-  transform: scale(1.1);
-}
-
-.step.active {
-  background: var(--accent-turquoise);
-  border-color: var(--accent-turquoise);
-  color: white;
-  box-shadow: 0 0 15px rgba(64, 224, 208, 0.4);
-}
-
-.step.current {
-  border-color: var(--accent-orange);
-  border-width: 3px;
-  animation: currentStep 0.1s ease;
-}
-
-@keyframes currentStep {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
-/* Track Colors */
-.track-kick .step.active { background: var(--accent-orange); border-color: var(--accent-orange); }
-.track-snare .step.active { background: var(--accent-purple); border-color: var(--accent-purple); }
-.track-hihat .step.active { background: var(--accent-turquoise); border-color: var(--accent-turquoise); }
-.track-openhat .step.active { background: var(--accent-yellow); border-color: var(--accent-yellow); color: var(--text-dark); }
-
-/* Volume controls */
-.volume-controls {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
-}
-
-.volume-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.volume-label {
-  font-weight: 500;
-  min-width: 60px;
-  font-size: 0.9rem;
-}
-
-.volume-slider {
-  flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: #ddd;
-  outline: none;
-  -webkit-appearance: none;
-}
-
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent-turquoise);
-  cursor: pointer;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 60px 20px 40px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin-top: 60px;
-  font-style: italic;
-}
-
-/* Responsive - Mobile performance optimizations */
-@media (max-width: 768px) {
-  .drum-machine {
-    padding: 25px;
-    margin: 0 10px;
-  }
-
-  .step {
-    width: 35px;
-    height: 35px;
-  }
-
-  .track-label {
-    width: 60px;
-    font-size: 0.8rem;
-  }
-
-  .controls {
-    gap: 15px;
-  }
-
-  .play-btn, .stop-btn, .clear-btn {
-    padding: 12px 20px;
-    font-size: 1rem;
-  }
-
-  .tempo-control {
-    width: 100%;
-    justify-content: center;
-  }
-
-  /* Reduce blur on mobile for performance */
-  .watercolor-blob {
-    filter: blur(25px);
-  }
-
-  .beat-active .blob-1,
-  .beat-active .blob-2,
-  .beat-active .blob-3,
-  .beat-active .blob-4 {
-    filter: blur(20px);
-  }
-}
-
-.nav-home:focus, .play-btn:focus, .stop-btn:focus, .clear-btn:focus {
-  outline: 3px solid var(--accent-orange);
-  outline-offset: 2px;
-}
-
-
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f0f8ff;
+      color: #222;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(45deg, #9d4edd, #ff7f50, #40e0d0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    button {
+      margin: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #sequencer {
+      display: grid;
+      grid-template-columns: repeat(17, auto);
+      gap: 0.5rem;
+      margin: 2rem auto;
+      width: max-content;
+    }
+    .label {
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    .step {
+      width: 30px;
+      height: 30px;
+      background: #eee;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .step.active {
+      background: #40e0d0;
+    }
+    footer {
+      margin-top: 3rem;
+      font-style: italic;
+      color: #666;
+    }
   </style>
 </head>
 <body>
-  <!-- ✦ Hidden Thought: "When systems learn to dance, beauty emerges from rhythm." -->
+  <a href="../index.html">← MondoSC</a>
+  <h1>Boogie</h1>
+  <p>Where systems learn to dance. Interactive rhythm and watercolor dreams.</p>
+  <div>
+    <button onclick="togglePlay()" id="playBtn">▶ Play</button>
+    <button onclick="stop()">⏹ Stop</button>
+    <button onclick="clearAll()">🧼 Clear All</button>
+  </div>
 
-  <!-- Animated watercolor background -->
+  <div id="sequencer"></div>
 
+  <footer>
+    "In the space between beats, the system finds its soul."
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script>
+    const tracks = ['kick', 'snare', 'hihat'];
+    const stepsPerTrack = 16;
+    const sequencer = document.getElementById('sequencer');
+    const patterns = {};
+    let index = 0;
+    let playing = false;
+    let intervalId;
+
+    tracks.forEach(track => {
+      const label = document.createElement('div');
+      label.textContent = track;
+      label.className = 'label';
+      sequencer.appendChild(label);
+      patterns[track] = Array(stepsPerTrack).fill(false);
+      for (let i = 0; i < stepsPerTrack; i++) {
+        const step = document.createElement('div');
+        step.className = 'step';
+        step.dataset.track = track;
+        step.dataset.step = i;
+        step.onclick = () => {
+          patterns[track][i] = !patterns[track][i];
+          step.classList.toggle('active');
+        };
+        sequencer.appendChild(step);
+      }
+    });
+
+    const kick = new Tone.MembraneSynth().toDestination();
+    const snare = new Tone.NoiseSynth().toDestination();
+    const hihat = new Tone.MetalSynth().toDestination();
+
+    function playStep() {
+      tracks.forEach(track => {
+        if (patterns[track][index]) {
+          switch (track) {
+            case 'kick': kick.triggerAttackRelease('C2', '8n'); break;
+            case 'snare': snare.triggerAttackRelease('8n'); break;
+            case 'hihat': hihat.triggerAttackRelease('16n'); break;
+          }
+        }
+      });
+      index = (index + 1) % stepsPerTrack;
+    }
+
+    async function togglePlay() {
+      if (!playing) {
+        await Tone.start();
+        intervalId = setInterval(playStep, 150);
+        document.getElementById('playBtn').textContent = '⏸ Pause';
+        playing = true;
+      } else {
+        stop();
+      }
+    }
+
+    function stop() {
+      clearInterval(intervalId);
+      document.getElementById('playBtn').textContent = '▶ Play';
+      playing = false;
+      index = 0;
+    }
+
+    function clearAll() {
+      Object.keys(patterns).forEach(track => {
+        patterns[track] = Array(stepsPerTrack).fill(false);
+      });
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    }
+  </script>
+</body>
+</html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boogie – MondoSC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent-orange: #ff7f50;
+      --accent-turquoise: #40e0d0;
+      --accent-purple: #9d4edd;
+      --accent-yellow: #ffd60a;
+      --text-dark: #222;
+      --text-muted: #666;
+      --bg-boogie: linear-gradient(135deg, #fff5ff 0%, #f0f8ff 100%);
+      --font-main: 'Inter', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-boogie);
+      color: var(--text-dark);
+      padding: 20px;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    .watercolor-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1; pointer-events: none;
+    }
+
+    .watercolor-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(40px);
+      opacity: 0.1;
+      animation: float 20s ease-in-out infinite alternate;
+      will-change: transform, opacity;
+    }
+
+    .blob-1 { width: 200px; height: 200px; background: radial-gradient(circle, var(--accent-orange), transparent); top: 20%; left: 10%; }
+    .blob-2 { width: 300px; height: 300px; background: radial-gradient(circle, var(--accent-turquoise), transparent); top: 60%; right: 15%; }
+    .blob-3 { width: 150px; height: 150px; background: radial-gradient(circle, var(--accent-purple), transparent); bottom: 30%; left: 50%; }
+    .blob-4 { width: 250px; height: 250px; background: radial-gradient(circle, var(--accent-yellow), transparent); top: 10%; right: 30%; }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -20px) scale(1.2); }
+      100% { transform: translate(-20px, 30px) scale(0.9); }
+    }
+
+    .site-title {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(45deg, var(--accent-purple), var(--accent-orange), var(--accent-turquoise));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(40deg); }
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      font-style: italic;
+    }
+
+    .drum-machine {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.85);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .controls, .volume-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .play-btn { background: var(--accent-turquoise); color: white; }
+    .stop-btn { background: var(--accent-orange); color: white; }
+    .clear-btn { background: white; color: var(--text-dark); border: 2px solid var(--accent-purple); }
+
+    .sequencer .track {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .track-label {
+      width: 80px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .steps {
+      display: flex;
+      gap: 5px;
+    }
+
+    .step {
+      width: 35px;
+      height: 35px;
+      border-radius: 6px;
+      background: white;
+      border: 2px solid #ccc;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .step.active { background: var(--accent-purple); border-color: var(--accent-purple); }
+
+    .step.current { border-color: var(--accent-yellow); border-width: 3px; }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .volume-slider {
+      width: 120px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
   <div class="watercolor-bg" id="watercolorBg">
     <div class="watercolor-blob blob-1"></div>
     <div class="watercolor-blob blob-2"></div>
@@ -531,457 +315,129 @@ footer {
     <div class="watercolor-blob blob-4"></div>
   </div>
 
-<a href="../index.html" class="nav-home">← MondoSC</a>
+  <h1 class="site-title">Boogie</h1>
+  <p class="subtitle">Where systems learn to dance. Interactive rhythm and watercolor dreams.</p>
 
-  <header>
-    <h1 class="site-title">Boogie</h1>
-    <p class="subtitle">Where systems learn to dance. Interactive rhythm and watercolor dreams.</p>
-  </header>
+  <div class="drum-machine">
+    <div class="controls">
+      <button class="play-btn" id="playBtn">▶ Play</button>
+      <button class="stop-btn" id="stopBtn">⏹ Stop</button>
+      <button class="clear-btn" id="clearBtn">Clear</button>
+      <input type="range" id="tempoSlider" min="60" max="180" value="120" class="volume-slider">
+      <span id="tempoDisplay">120 BPM</span>
+    </div>
 
-  <main>
-    <div class="drum-machine">
-      <!-- Controls -->
-      <div class="controls">
-        <button class="play-btn" id="playBtn" aria-label="Play or pause the drum sequence">▶ Play</button>
-        <button class="stop-btn" id="stopBtn" aria-label="Stop the drum sequence">⏹ Stop</button>
-        <button class="clear-btn" id="clearBtn" aria-label="Clear all drum patterns">Clear All</button>
-
-<div class="tempo-control">
-      <label for="tempoSlider">BPM:</label>
-      <input type="range" id="tempoSlider" class="tempo-slider" min="60" max="180" value="120" aria-label="Tempo control">
-      <span id="tempoDisplay">120</span>
+    <div class="sequencer" id="sequencer">
+      <div class="track" data-track="kick"><div class="track-label">Kick</div><div class="steps"></div></div>
+      <div class="track" data-track="snare"><div class="track-label">Snare</div><div class="steps"></div></div>
+      <div class="track" data-track="hihat"><div class="track-label">Hi-Hat</div><div class="steps"></div></div>
+      <div class="track" data-track="openhat"><div class="track-label">Open Hat</div><div class="steps"></div></div>
     </div>
   </div>
-
-  <!-- Progress Bar -->
-  <div class="progress-container">
-    <div class="progress-label">Sequence Progress</div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-  </div>
-
-  <!-- 16-Step Sequencer -->
-  <div class="sequencer" id="sequencer">
-    <!-- Kick Track -->
-    <div class="track track-kick">
-      <div class="track-label">Kick</div>
-      <div class="steps" data-track="kick">
-        <!-- 16 steps will be generated by JavaScript -->
-      </div>
-    </div>
-
-    <!-- Snare Track -->
-    <div class="track track-snare">
-      <div class="track-label">Snare</div>
-      <div class="steps" data-track="snare">
-        <!-- 16 steps will be generated by JavaScript -->
-      </div>
-    </div>
-
-    <!-- Hi-Hat Track -->
-    <div class="track track-hihat">
-      <div class="track-label">Hi-Hat</div>
-      <div class="steps" data-track="hihat">
-        <!-- 16 steps will be generated by JavaScript -->
-      </div>
-    </div>
-
-    <!-- Open Hat Track -->
-    <div class="track track-openhat">
-      <div class="track-label">Open Hat</div>
-      <div class="steps" data-track="openhat">
-        <!-- 16 steps will be generated by JavaScript -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Volume Controls -->
-  <div class="volume-controls">
-    <div class="volume-control">
-      <span class="volume-label">Kick</span>
-      <input type="range" class="volume-slider" data-track="kick" min="0" max="100" value="80">
-    </div>
-    <div class="volume-control">
-      <span class="volume-label">Snare</span>
-      <input type="range" class="volume-slider" data-track="snare" min="0" max="100" value="70">
-    </div>
-    <div class="volume-control">
-      <span class="volume-label">Hi-Hat</span>
-      <input type="range" class="volume-slider" data-track="hihat" min="0" max="100" value="60">
-    </div>
-    <div class="volume-control">
-      <span class="volume-label">Open Hat</span>
-      <input type="range" class="volume-slider" data-track="openhat" min="0" max="100" value="50">
-    </div>
-  </div>
-</div>
-
-
-  </main>
 
   <footer>
-    <p>"In the space between beats, the system finds its soul."</p>
-    <p style="margin-top: 10px; opacity: 0.7;">Click steps to create patterns • Adjust tempo and volume • Watch the colors dance</p>
+    "In the space between beats, the system finds its soul."
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone.js/14.8.49/Tone.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.39/Tone.min.js"></script>
   <script>
-    // Boogie Drum Machine - Interactive Sequencer
-    // Hidden Message: "When systems learn to dance, beauty emerges from rhythm."
+    document.addEventListener("DOMContentLoaded", () => {
+      const stepsPerTrack = 16;
+      const tempoSlider = document.getElementById("tempoSlider");
+      const tempoDisplay = document.getElementById("tempoDisplay");
+      let currentStep = 0;
+      let intervalId = null;
 
-    class DrumMachine {
-      constructor() {
-        this.isPlaying = false;
-        this.currentStep = 0;
-        this.bpm = 120;
-        this.stepInterval = null;
-        
-        // Pattern data - 16 steps for each track
-        this.patterns = {
-          kick: new Array(16).fill(false),
-          snare: new Array(16).fill(false),
-          hihat: new Array(16).fill(false),
-          openhat: new Array(16).fill(false)
-        };
+      const patterns = {
+        kick: new Array(stepsPerTrack).fill(false),
+        snare: new Array(stepsPerTrack).fill(false),
+        hihat: new Array(stepsPerTrack).fill(false),
+        openhat: new Array(stepsPerTrack).fill(false)
+      };
 
-        // Volume levels
-        this.volumes = {
-          kick: 0.8,
-          snare: 0.7,
-          hihat: 0.6,
-          openhat: 0.5
-        };
+      const synths = {
+        kick: new Tone.MembraneSynth().toDestination(),
+        snare: new Tone.NoiseSynth().toDestination(),
+        hihat: new Tone.MetalSynth({ envelope: { decay: 0.05 }}).toDestination(),
+        openhat: new Tone.MetalSynth({ envelope: { decay: 0.2 }}).toDestination()
+      };
 
-        this.initUI();
-        this.initAudio();
-        this.setupEventListeners();
-        this.createDefaultPattern();
-      }
+      document.querySelectorAll(".track").forEach(track => {
+        const trackName = track.dataset.track;
+        const stepsContainer = track.querySelector(".steps");
 
-      initUI() {
-        // Generate step buttons for each track
-        const trackContainers = document.querySelectorAll('.steps');
-        
-        trackContainers.forEach(container => {
-          for (let i = 0; i < 16; i++) {
-            const step = document.createElement('div');
-            step.className = 'step';
-            step.dataset.step = i;
-            step.textContent = i + 1;
-            container.appendChild(step);
-          }
-        });
-      }
-
-      initAudio() {
-        try {
-          // Create simple drum sounds using Tone.js
-          this.drums = {
-            kick: new Tone.MembraneSynth({
-              pitchDecay: 0.05,
-              octaves: 10,
-              oscillator: { type: 'sine' },
-              envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 }
-            }).toDestination(),
-
-            snare: new Tone.NoiseSynth({
-              noise: { type: 'white' },
-              envelope: { attack: 0.005, decay: 0.1, sustain: 0.0 }
-            }).toDestination(),
-
-            hihat: new Tone.MetalSynth({
-              frequency: 200,
-              envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
-              harmonicity: 5.1,
-              modulationIndex: 32,
-              resonance: 4000,
-              octaves: 1.5
-            }).toDestination(),
-
-            openhat: new Tone.MetalSynth({
-              frequency: 200,
-              envelope: { attack: 0.001, decay: 0.3, release: 0.3 },
-              harmonicity: 5.1,
-              modulationIndex: 32,
-              resonance: 4000,
-              octaves: 1.5
-            }).toDestination()
-          };
-
-          // Set initial volumes
-          Object.keys(this.volumes).forEach(track => {
-            this.drums[track].volume.value = Tone.gainToDb(this.volumes[track]);
+        for (let i = 0; i < stepsPerTrack; i++) {
+          const step = document.createElement("div");
+          step.classList.add("step");
+          step.addEventListener("click", () => {
+            patterns[trackName][i] = !patterns[trackName][i];
+            step.classList.toggle("active");
           });
-
-          this.audioInitialized = true;
-        } catch (error) {
-          console.error('Audio initialization failed:', error);
-          this.audioInitialized = false;
-          this.showAudioError();
+          stepsContainer.appendChild(step);
         }
-      }
-
-      showAudioError() {
-        const errorMsg = document.createElement('div');
-        errorMsg.style.cssText = 
-          position: fixed; top: 20px; right: 20px; z-index: 1000;
-          background: #ff6b6b; color: white; padding: 15px 20px;
-          border-radius: 10px; font-size: 0.9rem;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        ;
-        errorMsg.textContent = 'Audio not available. Visual mode only.';
-        document.body.appendChild(errorMsg);
-        setTimeout(() => errorMsg.remove(), 4000);
-      }
-
-      setupEventListeners() {
-        // Play/Stop/Clear buttons
-        document.getElementById('playBtn').addEventListener('click', () => this.togglePlay());
-        document.getElementById('stopBtn').addEventListener('click', () => this.stop());
-        document.getElementById('clearBtn').addEventListener('click', () => this.clearAll());
-
-        // Tempo slider
-        const tempoSlider = document.getElementById('tempoSlider');
-        const tempoDisplay = document.getElementById('tempoDisplay');
-        
-        tempoSlider.addEventListener('input', (e) => {
-          this.bpm = parseInt(e.target.value);
-          tempoDisplay.textContent = this.bpm;
-          if (this.isPlaying) {
-            this.updateTempo();
-          }
-        });
-
-        // Step buttons
-        document.querySelectorAll('.steps').forEach(container => {
-          const track = container.dataset.track;
-          container.addEventListener('click', (e) => {
-            if (e.target.classList.contains('step')) {
-              const stepIndex = parseInt(e.target.dataset.step);
-              this.toggleStep(track, stepIndex);
-            }
-          });
-        });
-
-        // Volume sliders
-        document.querySelectorAll('.volume-slider').forEach(slider => {
-          const track = slider.dataset.track;
-          slider.addEventListener('input', (e) => {
-            const volume = parseInt(e.target.value) / 100;
-            this.volumes[track] = volume;
-            this.drums[track].volume.value = Tone.gainToDb(volume);
-          });
-        });
-      }
-
-      createDefaultPattern() {
-        // Create a simple default pattern
-        this.patterns.kick[0] = true;
-        this.patterns.kick[4] = true;
-        this.patterns.kick[8] = true;
-        this.patterns.kick[12] = true;
-        
-        this.patterns.snare[4] = true;
-        this.patterns.snare[12] = true;
-        
-        this.patterns.hihat[2] = true;
-        this.patterns.hihat[6] = true;
-        this.patterns.hihat[10] = true;
-        this.patterns.hihat[14] = true;
-
-        this.updateUI();
-      }
-
-      toggleStep(track, stepIndex) {
-        this.patterns[track][stepIndex] = !this.patterns[track][stepIndex];
-        this.updateUI();
-      }
-
-      updateUI() {
-        Object.keys(this.patterns).forEach(track => {
-          const steps = document.querySelectorAll([data-track="${track}"] .step);
-          steps.forEach((step, index) => {
-            step.classList.toggle('active', this.patterns[track][index]);
-          });
-        });
-      }
-
-      async togglePlay() {
-        if (!this.isPlaying) {
-          await Tone.start();
-          this.play();
-        } else {
-          this.stop();
-        }
-      }
-
-      play() {
-        this.isPlaying = true;
-        this.currentStep = 0;
-        
-        const playBtn = document.getElementById('playBtn');
-        playBtn.textContent = '⏸ Pause';
-        playBtn.classList.add('playing');
-        
-        this.startSequencer();
-      }
-
-      stop() {
-        this.isPlaying = false;
-        
-        if (this.stepInterval) {
-          clearInterval(this.stepInterval);
-          this.stepInterval = null;
-        }
-        
-        const playBtn = document.getElementById('playBtn');
-        playBtn.textContent = '▶ Play';
-        playBtn.classList.remove('playing');
-        
-        // Clear current step highlighting
-        document.querySelectorAll('.step').forEach(step => {
-          step.classList.remove('current');
-        });
-        
-        // Reset progress bar
-        const progressFill = document.getElementById('progressFill');
-        progressFill.style.width = '0%';
-        
-        this.currentStep = 0;
-      }
-
-      startSequencer() {
-        const stepDuration = (60 / this.bpm / 4) * 1000; // 16th notes
-        
-        this.stepInterval = setInterval(() => {
-          this.playStep();
-          this.updateStepUI();
-          this.triggerWatercolorEffect();
-          
-          this.currentStep = (this.currentStep + 1) % 16;
-        }, stepDuration);
-      }
-
-      playStep() {
-        Object.keys(this.patterns).forEach(track => {
-          if (this.patterns[track][this.currentStep]) {
-            this.playDrum(track);
-          }
-        });
-      }
-
-      playDrum(track) {
-        if (!this.audioInitialized) return;
-        
-        try {
-          switch(track) {
-            case 'kick':
-              this.drums.kick.triggerAttackRelease('C2', '8n');
-              break;
-            case 'snare':
-              this.drums.snare.triggerAttackRelease('8n');
-              break;
-            case 'hihat':
-              this.drums.hihat.triggerAttackRelease('G5', '32n');
-              break;
-            case 'openhat':
-              this.drums.openhat.triggerAttackRelease('G5', '8n');
-              break;
-          }
-        } catch (error) {
-          console.error(Error playing ${track}:, error);
-        }
-      }
-
-      updateStepUI() {
-        // Remove current class from all steps
-        document.querySelectorAll('.step').forEach(step => {
-          step.classList.remove('current');
-        });
-        
-        // Add current class to current step in all tracks
-        document.querySelectorAll('.steps').forEach(container => {
-          const currentStepEl = container.children[this.currentStep];
-          if (currentStepEl) {
-            currentStepEl.classList.add('current');
-          }
-        });
-
-        // Update progress bar
-        this.updateProgressBar();
-      }
-
-      updateProgressBar() {
-        const progressFill = document.getElementById('progressFill');
-        const progress = ((this.currentStep + 1) / 16) * 100;
-        progressFill.style.width = ${progress}%;
-      }
-
-      triggerWatercolorEffect() {
-        // Check if any drums are playing on this step
-        const hasActiveStep = Object.keys(this.patterns).some(track => 
-          this.patterns[track][this.currentStep]
-        );
-        
-        if (hasActiveStep) {
-          const watercolorBg = document.getElementById('watercolorBg');
-          watercolorBg.classList.add('beat-active');
-          
-          setTimeout(() => {
-            watercolorBg.classList.remove('beat-active');
-          }, 100);
-        }
-      }
-
-      updateTempo() {
-        if (this.stepInterval) {
-          clearInterval(this.stepInterval);
-          this.startSequencer();
-        }
-      }
-
-      clearAll() {
-        Object.keys(this.patterns).forEach(track => {
-          this.patterns[track].fill(false);
-        });
-        this.updateUI();
-      }
-    }
-
-    // Initialize the drum machine when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      const drumMachine = new DrumMachine();
-      
-      // Title glitch effect
-      const title = document.querySelector('.site-title');
-      let titleText = title.textContent;
-      
-      title.addEventListener('mouseenter', () => {
-        let iteration = 0;
-        const letters = "BOOGIERHYTHM";
-        
-        const interval = setInterval(() => {
-          title.textContent = titleText
-            .split("")
-            .map((letter, index) => {
-              if (index < iteration) {
-                return titleText[index];
-              }
-              return letters[Math.floor(Math.random() * letters.length)];
-            })
-            .join("");
-          
-          if (iteration >= titleText.length) {
-            clearInterval(interval);
-          }
-          
-          iteration += 1 / 3;
-        }, 60);
       });
+
+      document.getElementById("playBtn").addEventListener("click", async () => {
+        await Tone.start();
+        if (!intervalId) startPlayback();
+      });
+
+      document.getElementById("stopBtn").addEventListener("click", stopPlayback);
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        Object.keys(patterns).forEach(track => patterns[track].fill(false));
+        document.querySelectorAll(".step").forEach(s => s.classList.remove("active", "current"));
+      });
+
+      tempoSlider.addEventListener("input", () => {
+        tempoDisplay.textContent = `${tempoSlider.value} BPM`;
+        if (intervalId) {
+          stopPlayback();
+          startPlayback();
+        }
+      });
+
+      function startPlayback() {
+        const bpm = parseInt(tempoSlider.value);
+        const interval = (60 / bpm) / 4 * 1000;
+        intervalId = setInterval(() => {
+          playStep(currentStep);
+          highlightStep(currentStep);
+          currentStep = (currentStep + 1) % stepsPerTrack;
+        }, interval);
+      }
+
+      function stopPlayback() {
+        clearInterval(intervalId);
+        intervalId = null;
+        currentStep = 0;
+        document.querySelectorAll(".step").forEach(s => s.classList.remove("current"));
+      }
+
+      function playStep(step) {
+        Object.entries(patterns).forEach(([track, pattern]) => {
+          if (pattern[step]) {
+            if (track === "kick") synths.kick.triggerAttackRelease("C2", "8n");
+            if (track === "snare") synths.snare.triggerAttackRelease("8n");
+            if (track === "hihat") synths.hihat.triggerAttackRelease("G5", "32n");
+            if (track === "openhat") synths.openhat.triggerAttackRelease("G5", "16n");
+          }
+        });
+      }
+
+      function highlightStep(step) {
+        document.querySelectorAll(".steps").forEach(steps => {
+          steps.querySelectorAll(".step").forEach((s, i) => {
+            s.classList.toggle("current", i === step);
+          });
+        });
+
+        const bg = document.getElementById("watercolorBg");
+        bg.classList.add("beat-active");
+        setTimeout(() => bg.classList.remove("beat-active"), 100);
+      }
     });
   </script>
-
 </body>
 </html>
+
