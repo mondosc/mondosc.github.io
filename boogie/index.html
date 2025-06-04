@@ -2,152 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Boogie – MondoSC</title>
-  <meta name="description" content="Where systems learn to dance. Interactive rhythm and watercolor dreams." />
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 2rem;
-      background: #f0f8ff;
-      color: #222;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(45deg, #9d4edd, #ff7f50, #40e0d0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    button {
-      margin: 0.5rem;
-      padding: 0.7rem 1.2rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #sequencer {
-      display: grid;
-      grid-template-columns: repeat(17, auto);
-      gap: 0.5rem;
-      margin: 2rem auto;
-      width: max-content;
-    }
-    .label {
-      font-weight: bold;
-      margin-right: 0.5rem;
-    }
-    .step {
-      width: 30px;
-      height: 30px;
-      background: #eee;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .step.active {
-      background: #40e0d0;
-    }
-    footer {
-      margin-top: 3rem;
-      font-style: italic;
-      color: #666;
-    }
-  </style>
-</head>
-<body>
-  <a href="../index.html">← MondoSC</a>
-  <h1>Boogie</h1>
-  <p>Where systems learn to dance. Interactive rhythm and watercolor dreams.</p>
-  <div>
-    <button onclick="togglePlay()" id="playBtn">▶ Play</button>
-    <button onclick="stop()">⏹ Stop</button>
-    <button onclick="clearAll()">🧼 Clear All</button>
-  </div>
-
-  <div id="sequencer"></div>
-
-  <footer>
-    "In the space between beats, the system finds its soul."
-  </footer>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-  <script>
-    const tracks = ['kick', 'snare', 'hihat'];
-    const stepsPerTrack = 16;
-    const sequencer = document.getElementById('sequencer');
-    const patterns = {};
-    let index = 0;
-    let playing = false;
-    let intervalId;
-
-    tracks.forEach(track => {
-      const label = document.createElement('div');
-      label.textContent = track;
-      label.className = 'label';
-      sequencer.appendChild(label);
-      patterns[track] = Array(stepsPerTrack).fill(false);
-      for (let i = 0; i < stepsPerTrack; i++) {
-        const step = document.createElement('div');
-        step.className = 'step';
-        step.dataset.track = track;
-        step.dataset.step = i;
-        step.onclick = () => {
-          patterns[track][i] = !patterns[track][i];
-          step.classList.toggle('active');
-        };
-        sequencer.appendChild(step);
-      }
-    });
-
-    const kick = new Tone.MembraneSynth().toDestination();
-    const snare = new Tone.NoiseSynth().toDestination();
-    const hihat = new Tone.MetalSynth().toDestination();
-
-    function playStep() {
-      tracks.forEach(track => {
-        if (patterns[track][index]) {
-          switch (track) {
-            case 'kick': kick.triggerAttackRelease('C2', '8n'); break;
-            case 'snare': snare.triggerAttackRelease('8n'); break;
-            case 'hihat': hihat.triggerAttackRelease('16n'); break;
-          }
-        }
-      });
-      index = (index + 1) % stepsPerTrack;
-    }
-
-    async function togglePlay() {
-      if (!playing) {
-        await Tone.start();
-        intervalId = setInterval(playStep, 150);
-        document.getElementById('playBtn').textContent = '⏸ Pause';
-        playing = true;
-      } else {
-        stop();
-      }
-    }
-
-    function stop() {
-      clearInterval(intervalId);
-      document.getElementById('playBtn').textContent = '▶ Play';
-      playing = false;
-      index = 0;
-    }
-
-    function clearAll() {
-      Object.keys(patterns).forEach(track => {
-        patterns[track] = Array(stepsPerTrack).fill(false);
-      });
-      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
-    }
-  </script>
-</body>
-</html>
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boogie – MondoSC</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -157,6 +11,9 @@
       --accent-turquoise: #40e0d0;
       --accent-purple: #9d4edd;
       --accent-yellow: #ffd60a;
+      --accent-pink: #ff006e;
+      --accent-green: #8ecae6;
+      --accent-red: #e63946;
       --text-dark: #222;
       --text-muted: #666;
       --bg-boogie: linear-gradient(135deg, #fff5ff 0%, #f0f8ff 100%);
@@ -193,6 +50,7 @@
     .blob-2 { width: 300px; height: 300px; background: radial-gradient(circle, var(--accent-turquoise), transparent); top: 60%; right: 15%; }
     .blob-3 { width: 150px; height: 150px; background: radial-gradient(circle, var(--accent-purple), transparent); bottom: 30%; left: 50%; }
     .blob-4 { width: 250px; height: 250px; background: radial-gradient(circle, var(--accent-yellow), transparent); top: 10%; right: 30%; }
+    .blob-5 { width: 180px; height: 180px; background: radial-gradient(circle, var(--accent-pink), transparent); bottom: 20%; right: 40%; }
 
     @keyframes float {
       0% { transform: translate(0, 0) scale(1); }
@@ -227,18 +85,20 @@
     }
 
     .drum-machine {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
       background: rgba(255,255,255,0.85);
       border-radius: 20px;
       padding: 30px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
     }
 
-    .controls, .volume-controls {
+    .controls {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
       gap: 15px;
       margin-bottom: 30px;
     }
@@ -253,20 +113,42 @@
       transition: all 0.2s ease;
     }
 
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
     .play-btn { background: var(--accent-turquoise); color: white; }
     .stop-btn { background: var(--accent-orange); color: white; }
     .clear-btn { background: white; color: var(--text-dark); border: 2px solid var(--accent-purple); }
+
+    .tempo-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.8);
+      padding: 8px 16px;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+    }
+
+    .sequencer {
+      overflow-x: auto;
+    }
 
     .sequencer .track {
       display: flex;
       align-items: center;
       margin-bottom: 12px;
+      min-width: fit-content;
     }
 
     .track-label {
-      width: 80px;
+      width: 90px;
       font-weight: bold;
       font-size: 0.9rem;
+      text-align: left;
+      flex-shrink: 0;
     }
 
     .steps {
@@ -281,21 +163,42 @@
       background: white;
       border: 2px solid #ccc;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .step.active { background: var(--accent-purple); border-color: var(--accent-purple); }
-
-    .step.current { border-color: var(--accent-yellow); border-width: 3px; }
-
-    .volume-control {
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
     }
+
+    .step:hover {
+      transform: scale(1.1);
+    }
+
+    .step.active { 
+      background: var(--accent-purple); 
+      border-color: var(--accent-purple); 
+      color: white;
+    }
+
+    .step.current { 
+      border-color: var(--accent-yellow); 
+      border-width: 3px; 
+      box-shadow: 0 0 10px var(--accent-yellow);
+    }
+
+    /* Track-specific colors */
+    .track[data-track="kick"] .step.active { background: var(--accent-red); border-color: var(--accent-red); }
+    .track[data-track="snare"] .step.active { background: var(--accent-orange); border-color: var(--accent-orange); }
+    .track[data-track="closedhat"] .step.active { background: var(--accent-turquoise); border-color: var(--accent-turquoise); }
+    .track[data-track="openhat"] .step.active { background: var(--accent-green); border-color: var(--accent-green); }
+    .track[data-track="lowtom"] .step.active { background: var(--accent-purple); border-color: var(--accent-purple); }
+    .track[data-track="hightom"] .step.active { background: var(--accent-pink); border-color: var(--accent-pink); }
+    .track[data-track="rimshot"] .step.active { background: var(--accent-yellow); border-color: var(--accent-yellow); color: black; }
 
     .volume-slider {
       width: 120px;
+      accent-color: var(--accent-purple);
     }
 
     footer {
@@ -305,6 +208,39 @@
       color: var(--text-muted);
       font-style: italic;
     }
+
+    /* Step numbers */
+    .step::before {
+      content: attr(data-step);
+      font-size: 10px;
+      opacity: 0.5;
+    }
+
+    .step.active::before {
+      opacity: 0.8;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .drum-machine {
+        padding: 20px;
+      }
+      
+      .track-label {
+        width: 70px;
+        font-size: 0.8rem;
+      }
+      
+      .step {
+        width: 30px;
+        height: 30px;
+      }
+      
+      .controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -313,6 +249,7 @@
     <div class="watercolor-blob blob-2"></div>
     <div class="watercolor-blob blob-3"></div>
     <div class="watercolor-blob blob-4"></div>
+    <div class="watercolor-blob blob-5"></div>
   </div>
 
   <h1 class="site-title">Boogie</h1>
@@ -322,21 +259,49 @@
     <div class="controls">
       <button class="play-btn" id="playBtn">▶ Play</button>
       <button class="stop-btn" id="stopBtn">⏹ Stop</button>
-      <button class="clear-btn" id="clearBtn">Clear</button>
-      <input type="range" id="tempoSlider" min="60" max="180" value="120" class="volume-slider">
-      <span id="tempoDisplay">120 BPM</span>
+      <button class="clear-btn" id="clearBtn">🗑 Clear</button>
+      
+      <div class="tempo-control">
+        <label for="tempoSlider">Tempo:</label>
+        <input type="range" id="tempoSlider" min="60" max="180" value="120" class="volume-slider">
+        <span id="tempoDisplay">120 BPM</span>
+      </div>
     </div>
 
     <div class="sequencer" id="sequencer">
-      <div class="track" data-track="kick"><div class="track-label">Kick</div><div class="steps"></div></div>
-      <div class="track" data-track="snare"><div class="track-label">Snare</div><div class="steps"></div></div>
-      <div class="track" data-track="hihat"><div class="track-label">Hi-Hat</div><div class="steps"></div></div>
-      <div class="track" data-track="openhat"><div class="track-label">Open Hat</div><div class="steps"></div></div>
+      <div class="track" data-track="kick">
+        <div class="track-label">Kick 🥁</div>
+        <div class="steps"></div>
+      </div>
+      <div class="track" data-track="snare">
+        <div class="track-label">Snare 🥁</div>
+        <div class="steps"></div>
+      </div>
+      <div class="track" data-track="closedhat">
+        <div class="track-label">Closed Hat</div>
+        <div class="steps"></div>
+      </div>
+      <div class="track" data-track="openhat">
+        <div class="track-label">Open Hat</div>
+        <div class="steps"></div>
+      </div>
+      <div class="track" data-track="lowtom">
+        <div class="track-label">Low Tom</div>
+        <div class="steps"></div>
+      </div>
+      <div class="track" data-track="hightom">
+        <div class="track-label">High Tom</div>
+        <div class="steps"></div>
+      </div>
+      <div class="track" data-track="rimshot">
+        <div class="track-label">Rimshot</div>
+        <div class="steps"></div>
+      </div>
     </div>
   </div>
 
   <footer>
-    "In the space between beats, the system finds its soul."
+    "In the space between beats, the system finds its soul." 🎵
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.39/Tone.min.js"></script>
@@ -348,49 +313,122 @@
       let currentStep = 0;
       let intervalId = null;
 
-      const patterns = {
-        kick: new Array(stepsPerTrack).fill(false),
-        snare: new Array(stepsPerTrack).fill(false),
-        hihat: new Array(stepsPerTrack).fill(false),
-        openhat: new Array(stepsPerTrack).fill(false)
-      };
+      // Define all 7 tracks
+      const tracks = ['kick', 'snare', 'closedhat', 'openhat', 'lowtom', 'hightom', 'rimshot'];
 
+      // Initialize patterns for all tracks
+      const patterns = {};
+      tracks.forEach(track => {
+        patterns[track] = new Array(stepsPerTrack).fill(false);
+      });
+
+      // Create optimized synths for each drum sound
       const synths = {
-        kick: new Tone.MembraneSynth().toDestination(),
-        snare: new Tone.NoiseSynth().toDestination(),
-        hihat: new Tone.MetalSynth({ envelope: { decay: 0.05 }}).toDestination(),
-        openhat: new Tone.MetalSynth({ envelope: { decay: 0.2 }}).toDestination()
+        kick: new Tone.MembraneSynth({
+          pitchDecay: 0.05,
+          octaves: 10,
+          oscillator: { type: "sine" },
+          envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 }
+        }).toDestination(),
+        
+        snare: new Tone.NoiseSynth({
+          noise: { type: "white" },
+          envelope: { attack: 0.001, decay: 0.2, sustain: 0 }
+        }).toDestination(),
+        
+        closedhat: new Tone.MetalSynth({
+          frequency: 250,
+          envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+          harmonicity: 5.1,
+          modulationIndex: 32,
+          resonance: 4000,
+          octaves: 1.5
+        }).toDestination(),
+        
+        openhat: new Tone.MetalSynth({
+          frequency: 250,
+          envelope: { attack: 0.001, decay: 0.4, release: 0.2 },
+          harmonicity: 5.1,
+          modulationIndex: 32,
+          resonance: 4000,
+          octaves: 1.5
+        }).toDestination(),
+        
+        lowtom: new Tone.MembraneSynth({
+          pitchDecay: 0.008,
+          octaves: 2,
+          oscillator: { type: "sine" },
+          envelope: { attack: 0.006, decay: 0.5, sustain: 0 }
+        }).toDestination(),
+        
+        hightom: new Tone.MembraneSynth({
+          pitchDecay: 0.008,
+          octaves: 2,
+          oscillator: { type: "sine" },
+          envelope: { attack: 0.006, decay: 0.3, sustain: 0 }
+        }).toDestination(),
+        
+        rimshot: new Tone.NoiseSynth({
+          noise: { type: "white" },
+          envelope: { attack: 0.001, decay: 0.05, sustain: 0 }
+        }).toDestination()
       };
 
-      document.querySelectorAll(".track").forEach(track => {
-        const trackName = track.dataset.track;
+      // Build the step sequencer UI
+      tracks.forEach(trackName => {
+        const track = document.querySelector(`[data-track="${trackName}"]`);
         const stepsContainer = track.querySelector(".steps");
 
         for (let i = 0; i < stepsPerTrack; i++) {
           const step = document.createElement("div");
           step.classList.add("step");
+          step.setAttribute("data-step", i + 1);
+          
           step.addEventListener("click", () => {
             patterns[trackName][i] = !patterns[trackName][i];
             step.classList.toggle("active");
+            
+            // Play the sound when clicked for immediate feedback
+            playSound(trackName);
           });
+          
           stepsContainer.appendChild(step);
         }
       });
 
+      // Play button
       document.getElementById("playBtn").addEventListener("click", async () => {
         await Tone.start();
-        if (!intervalId) startPlayback();
+        if (!intervalId) {
+          startPlayback();
+          document.getElementById("playBtn").textContent = "⏸ Pause";
+        } else {
+          stopPlayback();
+          document.getElementById("playBtn").textContent = "▶ Play";
+        }
       });
 
-      document.getElementById("stopBtn").addEventListener("click", stopPlayback);
+      // Stop button
+      document.getElementById("stopBtn").addEventListener("click", () => {
+        stopPlayback();
+        document.getElementById("playBtn").textContent = "▶ Play";
+      });
 
+      // Clear button
       document.getElementById("clearBtn").addEventListener("click", () => {
-        Object.keys(patterns).forEach(track => patterns[track].fill(false));
-        document.querySelectorAll(".step").forEach(s => s.classList.remove("active", "current"));
+        tracks.forEach(track => patterns[track].fill(false));
+        document.querySelectorAll(".step").forEach(step => {
+          step.classList.remove("active", "current");
+        });
+        stopPlayback();
+        document.getElementById("playBtn").textContent = "▶ Play";
       });
 
+      // Tempo slider
       tempoSlider.addEventListener("input", () => {
-        tempoDisplay.textContent = `${tempoSlider.value} BPM`;
+        const bpm = tempoSlider.value;
+        tempoDisplay.textContent = `${bpm} BPM`;
+        
         if (intervalId) {
           stopPlayback();
           startPlayback();
@@ -399,7 +437,8 @@
 
       function startPlayback() {
         const bpm = parseInt(tempoSlider.value);
-        const interval = (60 / bpm) / 4 * 1000;
+        const interval = (60 / bpm) / 4 * 1000; // 16th notes
+        
         intervalId = setInterval(() => {
           playStep(currentStep);
           highlightStep(currentStep);
@@ -408,36 +447,71 @@
       }
 
       function stopPlayback() {
-        clearInterval(intervalId);
-        intervalId = null;
-        currentStep = 0;
-        document.querySelectorAll(".step").forEach(s => s.classList.remove("current"));
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+          currentStep = 0;
+          document.querySelectorAll(".step").forEach(step => {
+            step.classList.remove("current");
+          });
+        }
       }
 
       function playStep(step) {
-        Object.entries(patterns).forEach(([track, pattern]) => {
-          if (pattern[step]) {
-            if (track === "kick") synths.kick.triggerAttackRelease("C2", "8n");
-            if (track === "snare") synths.snare.triggerAttackRelease("8n");
-            if (track === "hihat") synths.hihat.triggerAttackRelease("G5", "32n");
-            if (track === "openhat") synths.openhat.triggerAttackRelease("G5", "16n");
+        tracks.forEach(track => {
+          if (patterns[track][step]) {
+            playSound(track);
           }
         });
       }
 
+      function playSound(track) {
+        switch (track) {
+          case 'kick':
+            synths.kick.triggerAttackRelease("C2", "8n");
+            break;
+          case 'snare':
+            synths.snare.triggerAttackRelease("8n");
+            break;
+          case 'closedhat':
+            synths.closedhat.triggerAttackRelease("G5", "32n");
+            break;
+          case 'openhat':
+            synths.openhat.triggerAttackRelease("G5", "8n");
+            break;
+          case 'lowtom':
+            synths.lowtom.triggerAttackRelease("G3", "8n");
+            break;
+          case 'hightom':
+            synths.hightom.triggerAttackRelease("C4", "8n");
+            break;
+          case 'rimshot':
+            synths.rimshot.triggerAttackRelease("16n");
+            break;
+        }
+      }
+
       function highlightStep(step) {
-        document.querySelectorAll(".steps").forEach(steps => {
-          steps.querySelectorAll(".step").forEach((s, i) => {
-            s.classList.toggle("current", i === step);
+        tracks.forEach(track => {
+          const trackElement = document.querySelector(`[data-track="${track}"]`);
+          const steps = trackElement.querySelectorAll(".step");
+          
+          steps.forEach((stepElement, index) => {
+            stepElement.classList.toggle("current", index === step);
           });
         });
 
+        // Pulse the watercolor background on beat
         const bg = document.getElementById("watercolorBg");
-        bg.classList.add("beat-active");
-        setTimeout(() => bg.classList.remove("beat-active"), 100);
+        bg.style.transform = `scale(${1 + (step % 4 === 0 ? 0.02 : 0.01)})`;
+        setTimeout(() => {
+          bg.style.transform = "scale(1)";
+        }, 100);
       }
+
+      console.log("🎵 Boogie drum machine loaded!");
+      console.log("✨ 7 tracks ready: " + tracks.join(", "));
     });
   </script>
 </body>
 </html>
-
