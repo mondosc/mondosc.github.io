@@ -5,13 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MondoSC</title>
   <link rel="stylesheet" href="assets/style.css" />
+  <meta name="description" content="MondoSC — A Portal to Parallel Thoughtforms." />
+  <meta property="og:title" content="MondoSC" />
+  <meta property="og:image" content="https://mondosc.com/assets/mondoscmountainlogo.png" />
+  <meta property="og:url" content="https://mondosc.com" />
 </head>
 <body>
   <div class="background"></div>
-  <img src="assets/mondoscmountainlogo.png" alt="MondoSC Logo" class="logo" />
 
-  <div class="link-container">
-    <a href="https://tecnoxochitl.com" target="_blank">Visit Tecnoxochitl.com 🌺</a>
-  </div>
+  <main>
+    <img src="assets/mondoscmountainlogo.png" alt="MondoSC Logo" class="logo" />
+
+    <div class="link-container">
+      <a href="https://tecnoxochitl.com" target="_blank">→ Visit Tecnoxochitl.com 🌺</a>
+    </div>
+  </main>
+
+  <!-- 🥚 Easter Egg: Try pressing the Konami Code -->
+  <script>
+    const secret = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let input = [];
+
+    window.addEventListener('keydown', (e) => {
+      input.push(e.key);
+      input.splice(-secret.length - 1, input.length - secret.length);
+      if (input.join('') === secret.join('')) {
+        alert('🌐 You have unlocked the Serf Portal.');
+        window.location.href = 'https://serfcity.world';
+      }
+    });
+  </script>
 </body>
 </html>

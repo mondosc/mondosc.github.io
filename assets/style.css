@@ -1,56 +1,83 @@
+/* MONDOSC MASTER STYLE SHEET */
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'Helvetica Neue', sans-serif;
-  background: #0a0a0a;
+  background-color: #0a0a0a;
   color: #fff;
   overflow: hidden;
 }
 
 .background {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  background: url('stained.png') no-repeat center center;
-  background-size: cover;
-  animation: blurPulse 12s infinite alternate ease-in-out;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: url('stained.png') center center / cover no-repeat;
+  animation: blurPulse 20s ease-in-out infinite alternate;
   z-index: -1;
+  filter: blur(1.5px) brightness(0.85);
 }
 
 @keyframes blurPulse {
   0% {
-    filter: blur(0px) brightness(0.6);
-    opacity: 0.9;
+    filter: blur(1.5px) brightness(0.85);
+    transform: scale(1);
   }
   50% {
-    filter: blur(2px) brightness(1);
-    opacity: 1;
+    filter: blur(3px) brightness(1);
+    transform: scale(1.02);
   }
   100% {
-    filter: blur(0px) brightness(0.6);
-    opacity: 0.9;
+    filter: blur(1.5px) brightness(0.85);
+    transform: scale(1);
   }
+}
+
+main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
 }
 
 .logo {
   max-width: 80%;
-  margin: 5rem auto;
-  display: block;
+  width: 500px;
+  margin: 2rem auto;
+  filter: drop-shadow(0 0 12px #000);
+  transition: transform 0.4s ease;
 }
+
+.logo:hover {
+  transform: scale(1.03);
+}
+
 .link-container {
-  text-align: center;
   margin-top: 2rem;
 }
 
 .link-container a {
   color: #ffd700;
-  text-decoration: none;
-  font-family: 'Helvetica Neue', sans-serif;
   font-size: 1.2rem;
-  border-bottom: 1px dashed #ffd700;
-  transition: color 0.3s ease;
+  text-decoration: none;
+  font-family: inherit;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .link-container a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
   color: #ffffff;
 }
+
+/* 🥚 Hidden message: look up "Tecnoxochitl" in the page source. */
