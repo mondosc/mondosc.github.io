@@ -5,35 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MondoSC</title>
   <link rel="stylesheet" href="assets/style.css" />
-  <meta name="description" content="MondoSC — A Portal to Parallel Thoughtforms." />
-  <meta property="og:title" content="MondoSC" />
-  <meta property="og:image" content="https://mondosc.com/assets/mondoscmountainlogo.png" />
-  <meta property="og:url" content="https://mondosc.com" />
+  <meta name="description" content="MondoSC — Portal to Parallel Thoughtforms." />
 </head>
 <body>
+
+  <!-- Watercolor animated background -->
   <div class="background"></div>
 
+  <!-- Centered mondoM anchor logo -->
   <main>
-    <img src="assets/mondoscmountainlogo.png" alt="MondoSC Logo" class="logo" />
+    <img src="assets/mondoM.png" alt="MondoSC Logo" class="anchor-logo" />
 
-    <div class="link-container">
-      <a href="https://tecnoxochitl.com" target="_blank">→ Visit Tecnoxochitl.com 🌺</a>
+    <!-- Small stained.png link below -->
+    <div class="stained-link">
+      <a href="https://tecnoxochitl.com" target="_blank" rel="noopener">
+        <img src="assets/stained.png" alt="Go to Tecnoxochitl" class="stained-thumb" />
+      </a>
     </div>
   </main>
 
-  <!-- 🥚 Easter Egg: Try pressing the Konami Code -->
+  <!-- 🥚 Konami Code Easter Egg -->
   <script>
-    const secret = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    let input = [];
+    const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let buffer = [];
 
     window.addEventListener('keydown', (e) => {
-      input.push(e.key);
-      input.splice(-secret.length - 1, input.length - secret.length);
-      if (input.join('') === secret.join('')) {
-        alert('🌐 You have unlocked the Serf Portal.');
-        window.location.href = 'https://serfcity.world';
-      }
-    });
-  </script>
-</body>
-</html>
+      buffer.push(e.key);
+      buffer.splice(-code.length - 1, buffer.length - code.length);
+      if (buffer.join('') === code.join('')) {
